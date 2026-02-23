@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Chats</title>
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <div>
+          <h1>Group Chat</h1>
+          <p class="subtext">Simple chat stream</p>
+        </div>
+        <div class="actions">
+          <span class="count"><%= allChats.length %> messages</span>
+          <form action="/chats/new" method="get">
+            <button class="btn" type="submit">New Chat</button>
+          </form>
+        </div>
+      </header>
+
+      <% if (allChats.length === 0) { %>
+        <div class="empty">No chats available.</div>
+      <% } else { %>
+        <section class="chat-list">
+          <% allChats.forEach((chat, idx) => { %>
+            <article class="chat-row <%= idx % 2 === 0 ? "outgoing" : "incoming" %>">
+              <div class="chat-content">
+                <div class="chat-avatar"><%= (chat.from || "?").trim().charAt(0).toUpperCase() %></div>
+                <div class="chat-bubble">
+                  <p class="meta">From <strong><%= chat.from %></strong> to <strong><%= chat.to %></strong></p>
+                  <p class="message"><%= chat.msg %></p>
+                  <p class="time">
+                    <%= chat.created_at.toString().split(" ").slice(0, 4).join("-") %>
+                    <span>•</span>
+                    <%= chat.created_at.toString().split(" ")[4] %>
+                  </p>
+                  <div class="chat-actions">
+                    <a class="edit-link" href="/chats/<%= chat._id %>/edit" aria-label="Edit chat" title="Edit chat">&#9998;</a>
+                    <form action="/chats/<%= chat._id %>?_method=DELETE" method="POST" class="delete-form">
+                      <button class="delete-link" type="submit" aria-label="Delete chat" title="Delete chat">&#128465;</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </article>
+          <% }); %>
+        </section>
+      <% } %>
+    </main>
+  </body>
+</html>
